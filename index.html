@@ -17,7 +17,9 @@
         .fade-in { animation: fadeIn 1.2s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         .card-hover:hover { transform: translateY(-8px); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5); border-color: rgba(255, 255, 255, 0.2); }
-        .category-overlay { transition: all 0.5s ease-in-out; }
+        
+        /* 针对即时跳转的样式 */
+        .no-smooth { scroll-behavior: auto !important; }
     </style>
 </head>
 <body class="bg-slate-950 text-slate-300 leading-relaxed overflow-x-hidden">
@@ -26,7 +28,7 @@
     <nav class="fixed top-0 w-full z-50 glass">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between h-20 items-center">
-                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="showHome()">
+                <div class="flex-shrink-0 flex items-center gap-3 cursor-pointer" onclick="showHome(event, 'home')">
                     <div class="w-10 h-10 border border-white/20 flex items-center justify-center text-white">
                         <i data-lucide="layout"></i>
                     </div>
@@ -37,10 +39,10 @@
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-10 text-sm font-light tracking-widest">
-                        <a href="#home" onclick="showHome(event)" class="text-slate-300 hover:text-white transition-colors">首页 / HOME</a>
-                        <a href="#projects" onclick="showHome(event)" class="text-slate-300 hover:text-white transition-colors">作品 / WORKS</a>
-                        <a href="#about" onclick="showHome(event)" class="text-slate-300 hover:text-white transition-colors">关于 / ABOUT</a>
-                        <a href="#contact" onclick="showHome(event)" class="border border-white/20 text-white px-6 py-2 hover:bg-white hover:text-black transition-all">联系 / CONTACT</a>
+                        <a href="#home" onclick="showHome(event, 'home')" class="text-slate-300 hover:text-white transition-colors uppercase">首页 / HOME</a>
+                        <a href="#projects" onclick="showHome(event, 'projects')" class="text-slate-300 hover:text-white transition-colors uppercase">作品 / WORKS</a>
+                        <a href="#about" onclick="showHome(event, 'about')" class="text-slate-300 hover:text-white transition-colors uppercase">关于 / ABOUT</a>
+                        <a href="#contact" onclick="showHome(event, 'contact')" class="border border-white/20 text-white px-6 py-2 hover:bg-white hover:text-black transition-all uppercase">联系 / CONTACT</a>
                     </div>
                 </div>
             </div>
@@ -49,7 +51,7 @@
 
     <!-- 主容器 -->
     <main id="mainContent">
-        <!-- 首页背景 -->
+        <!-- 首页 -->
         <section id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden hero-gradient">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
                 <div class="fade-in">
@@ -69,7 +71,7 @@
                 </div>
                 
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <!-- 分类 1 -->
+                    <!-- 分类：住宅 -->
                     <div onclick="openCategory('residential')" class="group card-hover bg-slate-900 border border-white/5 p-4 cursor-pointer">
                         <div class="aspect-[3/4] overflow-hidden bg-slate-800 relative">
                             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
@@ -81,7 +83,7 @@
                         <h3 class="text-lg text-white mt-2 font-light tracking-widest">住宅设计</h3>
                     </div>
 
-                    <!-- 分类 2 -->
+                    <!-- 分类：商业 -->
                     <div onclick="openCategory('commercial')" class="group card-hover bg-slate-900 border border-white/5 p-4 cursor-pointer">
                         <div class="aspect-[3/4] overflow-hidden bg-slate-800 relative">
                             <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700">
@@ -93,7 +95,7 @@
                         <h3 class="text-lg text-white mt-2 font-light tracking-widest">商业建筑</h3>
                     </div>
 
-                    <!-- 分类 3 -->
+                    <!-- 分类：城市更新 -->
                     <div onclick="openCategory('urban')" class="group card-hover bg-slate-900 border border-white/5 p-4 cursor-pointer">
                         <div class="aspect-[3/4] overflow-hidden bg-slate-800 relative">
                             <img src="https://images.unsplash.com/photo-1449156001931-82992a472695?auto=format&fit=crop&w=800&q=80" class="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500">
@@ -108,7 +110,7 @@
             </div>
         </section>
 
-        <!-- 关于我 -->
+        <!-- 关于 -->
         <section id="about" class="py-32 bg-white text-slate-900">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
@@ -127,14 +129,13 @@
             </div>
         </section>
 
-        <!-- 联系信息区 -->
+        <!-- 联系 -->
         <section id="contact" class="py-32 bg-slate-950">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-center mb-20">
                     <h2 class="text-3xl font-light tracking-[0.3em] mb-4 text-white uppercase">启动合作 / Collaborate</h2>
                     <p class="text-slate-500 tracking-widest text-sm font-light italic">每一个伟大的作品都始于一次深刻的对话</p>
                 </div>
-
                 <div class="max-w-4xl mx-auto border border-white/10 bg-white/5 p-12 md:p-20">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
                         <div class="text-center md:text-left">
@@ -146,7 +147,7 @@
                             <div class="w-48 h-48 bg-white p-2 relative group">
                                 <img src="wechat-qr.png" alt="微信二维码" class="w-full h-full object-contain" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=mo-she-design'">
                             </div>
-                            <p class="text-[10px] text-slate-600 mt-6 tracking-widest text-center md:text-right">扫描二维码，添加建筑师个人微信进行即时沟通</p>
+                            <p class="text-[10px] text-slate-600 mt-6 tracking-widest text-center md:text-right">扫描二维码，直接沟通</p>
                         </div>
                     </div>
                 </div>
@@ -154,10 +155,11 @@
         </section>
     </main>
 
-    <!-- 分类详情页面模板 (默认隐藏) -->
+    <!-- 分类详情 -->
     <div id="categoryDetail" class="hidden fixed inset-0 z-[60] bg-slate-950 overflow-y-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-            <button onclick="showHome(null, 'projects')" class="flex items-center gap-2 text-slate-500 hover:text-white transition-colors uppercase tracking-[0.3em] text-xs mb-16">
+            <!-- 顶部返回按钮 -->
+            <button onclick="showHome(event, 'projects')" class="flex items-center gap-2 text-slate-500 hover:text-white transition-colors uppercase tracking-[0.3em] text-xs mb-16">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i> 返回作品列表 / Back to Works
             </button>
             
@@ -167,26 +169,25 @@
             </div>
 
             <div id="projectGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                <!-- 项目将由此动态生成 -->
+                <!-- 项目内容动态注入 -->
+            </div>
+
+            <!-- 底部返回按钮 -->
+            <div class="mt-32 pt-16 border-t border-white/5 text-center">
+                <button onclick="showHome(event, 'projects')" class="inline-flex items-center gap-4 text-white hover:text-indigo-400 transition-all uppercase tracking-[0.4em] text-sm group">
+                    <i data-lucide="arrow-left" class="w-5 h-5 group-hover:-translate-x-2 transition-transform"></i> 返回精选分类
+                </button>
             </div>
         </div>
     </div>
 
     <footer class="py-16 bg-slate-950 text-center border-t border-white/5">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col items-center gap-6">
-                <div class="flex gap-10">
-                    <a href="#" class="text-slate-600 hover:text-white transition-colors text-[10px] tracking-widest">INSTAGRAM</a>
-                    <a href="#" class="text-slate-600 hover:text-white transition-colors text-[10px] tracking-widest">BEHANCE</a>
-                    <a href="#" class="text-slate-600 hover:text-white transition-colors text-[10px] tracking-widest">XIAOHONGSHU</a>
-                </div>
-                <p class="text-slate-700 text-[10px] tracking-widest italic uppercase">© 2024 more share / 墨舍建筑设计 / All Rights Reserved.</p>
-            </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-slate-700 text-[10px] tracking-widest italic uppercase">
+            © 2024 more share / 墨舍建筑设计 / All Rights Reserved.
         </div>
     </footer>
 
     <script>
-        // 模拟分类数据
         const projectData = {
             residential: {
                 title: "住宅设计 / Residential",
@@ -201,7 +202,13 @@
                 projects: [
                     { title: "矩阵艺术中心", desc: "动态几何构成的公共地标", img: "https://images.unsplash.com/photo-1497366811353-6870744d04b2?auto=format&fit=crop&w=800&q=80" },
                     { title: "悬浮图书馆", desc: "知识流动空间的透明性研究", img: "https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=800&q=80" },
-                    { title: "暗物质精品酒店", desc: "奢华体验的材质化表达", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" }
+                    { title: "暗物质精品酒店", desc: "奢华体验的材质化表达", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?auto=format&fit=crop&w=800&q=80" },
+                    { title: "光影零售旗舰", desc: "品牌叙事与空间界面的重构", img: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80" },
+                    { title: "垂直生态办公塔", desc: "绿色办公与城市景观的共生", img: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=800&q=80" },
+                    { title: "极简概念展厅", desc: "纯粹体积感创造的展示空间", img: "https://images.unsplash.com/photo-1533154683836-84ea7a0bc310?auto=format&fit=crop&w=800&q=80" },
+                    { title: "都会漫步广场", desc: "开放式商业街区的尺度推敲", img: "https://images.unsplash.com/photo-1555529669-2269763671c0?auto=format&fit=crop&w=800&q=80" },
+                    { title: "未来主义实验室", desc: "科技感与实验性材质的碰撞", img: "https://images.unsplash.com/photo-1517420704952-d9f39e95b43e?auto=format&fit=crop&w=800&q=80" },
+                    { title: "浮空剧院", desc: "戏剧性空间张力的建筑表达", img: "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=800&q=80" }
                 ]
             },
             urban: {
@@ -217,7 +224,7 @@
         window.onload = () => {
             lucide.createIcons();
             
-            // 平滑滚动初始化
+            // 初始化平滑滚动（仅限首页内部链接）
             document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                 anchor.addEventListener('click', function (e) {
                     if (document.getElementById('categoryDetail').classList.contains('hidden')) {
@@ -252,31 +259,32 @@
             });
 
             detailView.classList.remove('hidden');
-            document.body.style.overflow = 'hidden'; // 禁用背景滚动
+            document.body.style.overflow = 'hidden';
             window.scrollTo(0, 0);
+            lucide.createIcons(); // 刷新新生成的图标
         }
 
-        /**
-         * 显示主页内容
-         * @param {Event} e - 点击事件
-         * @param {string} targetId - 需要滚动到的目标位置 ID
-         */
         function showHome(e, targetId) {
             if (e) e.preventDefault();
             
-            // 隐藏详情页
-            document.getElementById('categoryDetail').classList.add('hidden');
-            document.body.style.overflow = 'auto'; // 恢复滚动
+            const detailView = document.getElementById('categoryDetail');
+            const element = document.getElementById(targetId || 'projects');
             
-            // 确定滚动目标
-            const finalTarget = targetId || (e ? e.currentTarget.getAttribute('href').substring(1) : 'projects');
-            const element = document.getElementById(finalTarget);
-            
+            // 核心逻辑：即时跳转以避免“下滑动画”
+            // 1. 先关闭详情页
+            detailView.classList.add('hidden');
+            document.body.style.overflow = 'auto';
+
             if (element) {
-                // 延迟一小会儿确保 DOM 状态已切换，然后平滑滚动
+                // 2. 暂时禁用平滑滚动，实现即时定位
+                document.documentElement.classList.add('no-smooth');
+                const offset = element.offsetTop;
+                window.scrollTo(0, offset);
+                
+                // 3. 恢复平滑滚动（用于后续导航）
                 setTimeout(() => {
-                    element.scrollIntoView({ behavior: 'smooth' });
-                }, 10);
+                    document.documentElement.classList.remove('no-smooth');
+                }, 50);
             }
         }
     </script>
