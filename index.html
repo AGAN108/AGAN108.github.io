@@ -37,10 +37,10 @@
                 </div>
                 <div class="hidden md:block">
                     <div class="ml-10 flex items-baseline space-x-10 text-sm font-light tracking-widest">
-                        <a href="#home" onclick="showHome()" class="text-slate-300 hover:text-white transition-colors">首页 / HOME</a>
-                        <a href="#projects" onclick="showHome()" class="text-slate-300 hover:text-white transition-colors">作品 / WORKS</a>
-                        <a href="#about" onclick="showHome()" class="text-slate-300 hover:text-white transition-colors">关于 / ABOUT</a>
-                        <a href="#contact" onclick="showHome()" class="border border-white/20 text-white px-6 py-2 hover:bg-white hover:text-black transition-all">联系 / CONTACT</a>
+                        <a href="#home" onclick="showHome(event)" class="text-slate-300 hover:text-white transition-colors">首页 / HOME</a>
+                        <a href="#projects" onclick="showHome(event)" class="text-slate-300 hover:text-white transition-colors">作品 / WORKS</a>
+                        <a href="#about" onclick="showHome(event)" class="text-slate-300 hover:text-white transition-colors">关于 / ABOUT</a>
+                        <a href="#contact" onclick="showHome(event)" class="border border-white/20 text-white px-6 py-2 hover:bg-white hover:text-black transition-all">联系 / CONTACT</a>
                     </div>
                 </div>
             </div>
@@ -157,8 +157,8 @@
     <!-- 分类详情页面模板 (默认隐藏) -->
     <div id="categoryDetail" class="hidden fixed inset-0 z-[60] bg-slate-950 overflow-y-auto">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-32">
-            <button onclick="showHome()" class="flex items-center gap-2 text-slate-500 hover:text-white transition-colors uppercase tracking-[0.3em] text-xs mb-16">
-                <i data-lucide="arrow-left" class="w-4 h-4"></i> 返回首页 / Back to Home
+            <button onclick="showHome(null, 'projects')" class="flex items-center gap-2 text-slate-500 hover:text-white transition-colors uppercase tracking-[0.3em] text-xs mb-16">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i> 返回作品列表 / Back to Works
             </button>
             
             <div class="mb-20">
@@ -232,7 +232,6 @@
         function openCategory(catId) {
             const data = projectData[catId];
             const detailView = document.getElementById('categoryDetail');
-            const mainContent = document.getElementById('mainContent');
             const grid = document.getElementById('projectGrid');
             const title = document.getElementById('catTitle');
 
@@ -257,9 +256,28 @@
             window.scrollTo(0, 0);
         }
 
-        function showHome() {
+        /**
+         * 显示主页内容
+         * @param {Event} e - 点击事件
+         * @param {string} targetId - 需要滚动到的目标位置 ID
+         */
+        function showHome(e, targetId) {
+            if (e) e.preventDefault();
+            
+            // 隐藏详情页
             document.getElementById('categoryDetail').classList.add('hidden');
             document.body.style.overflow = 'auto'; // 恢复滚动
+            
+            // 确定滚动目标
+            const finalTarget = targetId || (e ? e.currentTarget.getAttribute('href').substring(1) : 'projects');
+            const element = document.getElementById(finalTarget);
+            
+            if (element) {
+                // 延迟一小会儿确保 DOM 状态已切换，然后平滑滚动
+                setTimeout(() => {
+                    element.scrollIntoView({ behavior: 'smooth' });
+                }, 10);
+            }
         }
     </script>
 </body>
