@@ -130,6 +130,7 @@
     <section id="home" class="relative min-h-screen flex items-center justify-center pt-20 overflow-hidden hero-gradient">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
             <div class="fade-in">
+                <!-- 已修改标语 -->
                 <h1 class="text-5xl md:text-8xl font-bold tracking-[0.15em] text-white mb-8">用审美治愈世界</h1>
                 <div class="h-px w-24 bg-white/30 mx-auto mb-8"></div>
                 <p class="max-w-2xl mx-auto text-xl md:text-2xl text-slate-400 font-light tracking-widest">专注建筑设计的全过程解决方案</p>
@@ -178,7 +179,6 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
                 <div class="relative">
                     <div class="absolute -inset-4 border border-slate-200 translate-x-4 translate-y-4 -z-10"></div>
-                    <!-- 更新了样式：grayscale（黑白） -> hover:grayscale-0（悬停时彩色） -->
                     <img src="me.png" alt="个人照片" class="w-full aspect-[4/5] object-cover grayscale hover:grayscale-0 transition-all duration-700 shadow-2xl">
                 </div>
                 <div>
@@ -192,27 +192,62 @@
         </div>
     </section>
 
-    <!-- 联系表单 -->
+    <!-- 联系表单与联系信息 -->
     <section id="contact" class="py-32 bg-slate-950">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-3xl font-light tracking-[0.3em] mb-4 text-white uppercase">启动合作 / Collaborate</h2>
-            <form id="contactForm" class="text-left space-y-8 mt-16">
-                <div class="border-b border-white/10 pb-4">
-                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-2">您的称呼 / Name</label>
-                    <input type="text" id="name" required class="w-full bg-transparent outline-none text-white font-light py-2">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-3xl font-light tracking-[0.3em] mb-4 text-white uppercase">启动合作 / Collaborate</h2>
+                <p class="text-slate-500 tracking-widest text-sm font-light">每一个伟大的作品都始于一次深刻的对话</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-20">
+                <!-- 左侧：表单 -->
+                <div>
+                    <form id="contactForm" class="text-left space-y-8">
+                        <div class="border-b border-white/10 pb-4">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-2">您的称呼 / Name</label>
+                            <input type="text" id="name" required class="w-full bg-transparent outline-none text-white font-light py-2">
+                        </div>
+                        <div class="border-b border-white/10 pb-4">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-2">电子邮箱 / Email</label>
+                            <input type="email" id="email" required class="w-full bg-transparent outline-none text-white font-light py-2">
+                        </div>
+                        <div class="border-b border-white/10 pb-4">
+                            <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-2">项目描述 / Project Inquiry</label>
+                            <textarea id="message" rows="3" required class="w-full bg-transparent outline-none text-white font-light py-2"></textarea>
+                        </div>
+                        <button type="submit" class="inline-block px-12 py-4 bg-white text-black text-xs tracking-[0.3em] uppercase hover:bg-slate-200 transition-all font-bold">提交咨询 / Submit</button>
+                    </form>
+                    <div id="successMsg" class="hidden mt-12 p-8 border border-white/10 text-slate-400 tracking-widest text-xs">
+                        感谢您的信任。信息已保存，我们将在 24 小时内与您联系。
+                    </div>
                 </div>
-                <div class="border-b border-white/10 pb-4">
-                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-2">电子邮箱 / Email</label>
-                    <input type="email" id="email" required class="w-full bg-transparent outline-none text-white font-light py-2">
+
+                <!-- 右侧：联系信息、微信、二维码 -->
+                <div class="space-y-12">
+                    <div class="space-y-6">
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-2">联系电话 / Telephone</p>
+                            <p class="text-xl font-light text-white tracking-widest">[在此输入您的电话]</p>
+                        </div>
+                        <div>
+                            <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-2">微信联系 / WeChat ID</p>
+                            <p class="text-xl font-light text-white tracking-widest">[在此输入您的微信号]</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <p class="text-[10px] uppercase tracking-[0.3em] text-slate-500 mb-4">微信二维码 / WeChat QR Code</p>
+                        <div class="w-40 h-40 bg-slate-900 border border-white/10 flex items-center justify-center relative group">
+                            <!-- 请将二维码图片命名为 wechat-qr.png 上传至 GitHub 仓库 -->
+                            <img src="wechat-qr.png" alt="微信二维码" class="w-full h-full object-contain p-2" onerror="this.style.display='none'">
+                            <div class="absolute inset-0 flex items-center justify-center pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="qr-code" class="w-8 h-8 text-slate-600"></i>
+                            </div>
+                        </div>
+                        <p class="text-[10px] text-slate-600 mt-4 tracking-widest">扫描二维码，添加建筑师个人微信</p>
+                    </div>
                 </div>
-                <div class="border-b border-white/10 pb-4">
-                    <label class="block text-[10px] uppercase tracking-widest text-slate-500 mb-2">项目描述 / Project Inquiry</label>
-                    <textarea id="message" rows="3" required class="w-full bg-transparent outline-none text-white font-light py-2"></textarea>
-                </div>
-                <button type="submit" class="inline-block px-12 py-4 bg-white text-black text-xs tracking-[0.3em] uppercase hover:bg-slate-200 transition-all font-bold">提交咨询 / Submit</button>
-            </form>
-            <div id="successMsg" class="hidden mt-12 p-8 border border-white/10 text-slate-400 tracking-widest text-xs">
-                感谢您的信任。信息已保存，我们将在 24 小时内与您联系。
             </div>
         </div>
     </section>
@@ -233,5 +268,4 @@
     </footer>
 
 </body>
-
 </html>
