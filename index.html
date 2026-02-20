@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>个人品牌 | 探索无限可能</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .glass {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .hero-gradient {
+            background: radial-gradient(circle at top left, #4f46e5 0%, transparent 40%),
+                        radial-gradient(circle at bottom right, #9333ea 0%, transparent 40%);
+        }
+        .fade-in {
+            animation: fadeIn 1s ease-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 leading-relaxed overflow-x-hidden">
+
+    <!-- 导航栏 -->
+    <nav class="fixed top-0 w-full z-50 glass border-b">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16 items-center">
+                <div class="flex-shrink-0 flex items-center gap-2">
+                    <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+                        <i data-lucide="zap"></i>
+                    </div>
+                    <span class="font-bold text-xl tracking-tight uppercase">Visionary</span>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8 text-sm font-medium">
+                        <a href="#home" class="hover:text-indigo-600 transition-colors">首页</a>
+                        <a href="#projects" class="hover:text-indigo-600 transition-colors">项目展示</a>
+                        <a href="#about" class="hover:text-indigo-600 transition-colors">关于我</a>
+                        <a href="#contact" class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition-all">联系合作</a>
+                    </div>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-slate-600"><i data-lucide="menu"></i></button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄形象区 -->
+    <section id="home" class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden hero-gradient">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div class="text-center fade-in">
+                <h1 class="text-5xl md:text-7xl font-extrabold tracking-tight text-slate-900 mb-6">
+                    创造驱动未来的 <br>
+                    <span class="text-indigo-600">数字化体验</span>
+                </h1>
+                <p class="mt-4 max-w-2xl mx-auto text-xl text-slate-600">
+                    专注于界面设计、前端开发与全栈解决方案。致力于用代码将创意变为现实。
+                </p>
+                <div class="mt-10 flex justify-center gap-4">
+                    <a href="#projects" class="px-8 py-3 bg-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg hover:bg-indigo-700 transition-all">查看作品集</a>
+                    <a href="#about" class="px-8 py-3 bg-white text-indigo-600 rounded-xl font-semibold border border-indigo-100 hover:bg-indigo-50 transition-all">了解更多</a>
+                </div>
+            </div>
+        </div>
+        <!-- 装饰背景 -->
+        <div class="absolute top-0 left-0 w-full h-full -z-10 opacity-20 pointer-events-none">
+            <svg class="w-full h-full" viewBox="0 0 100 100" preserveAspectRatio="none">
+                <circle cx="20" cy="20" r="30" fill="url(#grad1)" />
+                <defs>
+                    <radialGradient id="grad1">
+                        <stop offset="0%" stop-color="#4f46e5" />
+                        <stop offset="100%" stop-color="transparent" />
+                    </radialGradient>
+                </defs>
+            </svg>
+        </div>
+    </section>
+
+    <!-- 项目展示区 -->
+    <section id="projects" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16">
+                <h2 class="text-3xl font-bold text-slate-900 mb-2">精选作品</h2>
+                <div class="w-16 h-1 bg-indigo-600 rounded"></div>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- 项目卡片 1 -->
+                <div class="group card-hover rounded-2xl overflow-hidden bg-slate-50 border border-slate-100">
+                    <div class="aspect-video bg-slate-200 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80" alt="项目预览" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">Web 设计</span>
+                        <h3 class="text-xl font-bold mt-2 mb-3">电子商务控制面板</h3>
+                        <p class="text-slate-600 text-sm mb-4">一套为零售商打造的实时库存管理与数据分析系统。</p>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-white border text-[10px] rounded">React</span>
+                            <span class="px-2 py-1 bg-white border text-[10px] rounded">Tailwind</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目卡片 2 -->
+                <div class="group card-hover rounded-2xl overflow-hidden bg-slate-50 border border-slate-100">
+                    <div class="aspect-video bg-slate-200 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=800&q=80" alt="项目预览" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">移动应用</span>
+                        <h3 class="text-xl font-bold mt-2 mb-3">AI 摄影助手</h3>
+                        <p class="text-slate-600 text-sm mb-4">利用计算机视觉技术实时优化照片构图与色彩建议。</p>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-white border text-[10px] rounded">Flutter</span>
+                            <span class="px-2 py-1 bg-white border text-[10px] rounded">Python</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 项目卡片 3 -->
+                <div class="group card-hover rounded-2xl overflow-hidden bg-slate-50 border border-slate-100">
+                    <div class="aspect-video bg-slate-200 relative overflow-hidden">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80" alt="项目预览" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                    </div>
+                    <div class="p-6">
+                        <span class="text-xs font-bold text-indigo-600 uppercase tracking-widest">后台开发</span>
+                        <h3 class="text-xl font-bold mt-2 mb-3">金融风控 API</h3>
+                        <p class="text-slate-600 text-sm mb-4">每秒处理数千次并发请求的高性能反欺诈微服务。</p>
+                        <div class="flex gap-2">
+                            <span class="px-2 py-1 bg-white border text-[10px] rounded">Go</span>
+                            <span class="px-2 py-1 bg-white border text-[10px] rounded">Redis</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 关于我 -->
+    <section id="about" class="py-24 bg-slate-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="lg:w-1/2">
+                    <div class="relative">
+                        <div class="w-full aspect-square bg-indigo-600 rounded-3xl rotate-3 absolute inset-0 -z-10 opacity-10"></div>
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80" alt="头像" class="w-full aspect-square object-cover rounded-3xl shadow-xl">
+                    </div>
+                </div>
+                <div class="lg:w-1/2">
+                    <h2 class="text-4xl font-bold mb-6">我是 [你的名字]，一名热衷于创新的开发者</h2>
+                    <p class="text-slate-600 text-lg mb-8 text-justify">
+                        在超过 5 年的行业经验中，我帮助了数十家初创公司建立了他们的数字化基础。我不只是编写代码，我更倾向于通过深入的技术洞察，解决真实的业务难题。
+                    </p>
+                    <div class="grid grid-cols-2 gap-6">
+                        <div class="flex items-start gap-3">
+                            <div class="text-indigo-600 mt-1"><i data-lucide="check-circle-2"></i></div>
+                            <div>
+                                <h4 class="font-bold">UI/UX 设计</h4>
+                                <p class="text-sm text-slate-500">以用户为中心的美学</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3">
+                            <div class="text-indigo-600 mt-1"><i data-lucide="check-circle-2"></i></div>
+                            <div>
+                                <h4 class="font-bold">性能优化</h4>
+                                <p class="text-sm text-slate-500">极速的加载响应</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 联系区 -->
+    <section id="contact" class="py-24 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-3xl font-bold mb-4">准备好开始新项目了吗？</h2>
+            <p class="text-slate-600 mb-12">如果你有任何想法或建议，欢迎随时给我留言，我通常会在 24 小时内回复。</p>
+            
+            <form id="contactForm" class="text-left space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">姓名</label>
+                        <input type="text" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-slate-700 mb-2">邮箱</label>
+                        <input type="email" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-slate-700 mb-2">留言内容</label>
+                    <textarea rows="4" required class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 outline-none transition-all"></textarea>
+                </div>
+                <button type="submit" class="w-full py-4 bg-slate-900 text-white font-bold rounded-xl hover:bg-black transition-all">发送消息</button>
+            </form>
+            
+            <!-- 提交反馈框 -->
+            <div id="successMsg" class="hidden mt-6 p-4 bg-green-50 text-green-700 border border-green-200 rounded-xl">
+                消息已成功发出！我会尽快联系你。
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="py-12 bg-slate-50 border-t">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center space-x-6 mb-8">
+                <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i data-lucide="github"></i></a>
+                <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i data-lucide="twitter"></i></a>
+                <a href="#" class="text-slate-400 hover:text-indigo-600 transition-colors"><i data-lucide="linkedin"></i></a>
+            </div>
+            <p class="text-slate-500 text-sm">© 2024 Visionary. 保留所有权利。</p>
+        </div>
+    </footer>
+
+    <script>
+        // 初始化图标
+        lucide.createIcons();
+
+        // 处理表单提交
+        const form = document.getElementById('contactForm');
+        const success = document.getElementById('successMsg');
+
+        form.onsubmit = (e) => {
+            e.preventDefault();
+            form.style.display = 'none';
+            success.classList.remove('hidden');
+            // 这里可以添加真实的 API 调用逻辑
+        };
+
+        // 平滑滚动补偿
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
