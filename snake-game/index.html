@@ -34,6 +34,12 @@
     border: 2px solid #444;
     border-radius: 4px;
     touch-action: none;
+    max-width: 92vw;
+    height: auto;
+  }
+  #hint {
+    max-width: 92vw;
+    text-align: center;
   }
   #overlay {
     position: fixed;
@@ -84,6 +90,49 @@
     background: #7CFC00;
     color: #1a1a2e;
   }
+  #boostBtn {
+    padding: 0 20px;
+    height: 70px;
+    font-size: 1rem;
+    background: #e67e22;
+    color: #1a1a2e;
+    touch-action: none;
+    user-select: none;
+  }
+  #boostBtn:active, #boostBtn.pressed {
+    background: #ffb85c;
+  }
+  #mobileControls {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  #dpad {
+    display: grid;
+    grid-template-columns: repeat(3, 60px);
+    grid-template-rows: repeat(3, 60px);
+    grid-template-areas:
+      ".    up    ."
+      "left .     right"
+      ".    down  .";
+    gap: 6px;
+  }
+  .dpad-btn {
+    font-size: 1.6rem;
+    background: #333;
+    color: #eee;
+    padding: 0;
+    touch-action: none;
+    user-select: none;
+  }
+  .dpad-btn.pressed {
+    background: #f0c419;
+    color: #1a1a2e;
+  }
+  .dpad-up { grid-area: up; }
+  .dpad-left { grid-area: left; }
+  .dpad-down { grid-area: down; }
+  .dpad-right { grid-area: right; }
 </style>
 </head>
 <body>
@@ -96,7 +145,18 @@
     <button id="musicBtn" class="on">🔊 音乐</button>
   </div>
   <canvas id="game" width="480" height="480"></canvas>
-  <div id="hint">方向键 / WASD 控制(长按加速),空格暂停,回车重新开始</div>
+
+  <div id="mobileControls">
+    <div id="dpad">
+      <button class="dpad-btn dpad-up" data-key="ArrowUp">▲</button>
+      <button class="dpad-btn dpad-left" data-key="ArrowLeft">◀</button>
+      <button class="dpad-btn dpad-down" data-key="ArrowDown">▼</button>
+      <button class="dpad-btn dpad-right" data-key="ArrowRight">▶</button>
+    </div>
+    <button id="boostBtn">⚡<br>加速</button>
+  </div>
+
+  <div id="hint">方向键 / WASD 或下方模拟方向键控制(按住加速),空格暂停,回车重新开始</div>
 
   <div id="overlay">
     <div id="overlayText" style="font-size:1.5rem;"></div>
@@ -117,6 +177,7 @@ const CELLS = canvas.width / GRID;
 const SPEEDS = { slow: 180, medium: 110, fast: 60 };
 let currentSpeed = 'medium';
 const heldDirectionKeys = new Set();
+let touchBoostActive = false;
 const BOOST_FACTOR = 0.5;
 const MIN_INTERVAL = 30;
 
@@ -181,7 +242,8 @@ function applySpeed() {
   if (!running) return;
   clearInterval(tickInterval);
   const base = SPEEDS[currentSpeed];
-  const interval = heldDirectionKeys.size > 0 ? Math.max(MIN_INTERVAL, base * BOOST_FACTOR) : base;
+  const boosted = heldDirectionKeys.size > 0 || touchBoostActive;
+  const interval = boosted ? Math.max(MIN_INTERVAL, base * BOOST_FACTOR) : base;
   tickInterval = setInterval(tick, interval);
 }
 
@@ -193,6 +255,7 @@ function init() {
   running = true;
   paused = false;
   heldDirectionKeys.clear();
+  touchBoostActive = false;
   placeFood();
   updateScore();
   overlay.classList.remove('show');
@@ -264,6 +327,23 @@ const KEY_MAP = {
   ArrowRight: {x: 1, y: 0}, d: {x: 1, y: 0}, D: {x: 1, y: 0},
 };
 
+function pressDirection(key, isRepeat) {
+  const dir = KEY_MAP[key];
+  if (!dir) return;
+  if (!isRepeat && !heldDirectionKeys.has(key)) {
+    heldDirectionKeys.add(key);
+    applySpeed();
+  }
+  if (dir.x === -direction.x && dir.y === -direction.y) return;
+  nextDirection = dir;
+}
+
+function releaseDirection(key) {
+  if (!(key in KEY_MAP)) return;
+  heldDirectionKeys.delete(key);
+  applySpeed();
+}
+
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -276,21 +356,27 @@ window.addEventListener('keydown', (e) => {
     e.preventDefault();
     return;
   }
-  const dir = KEY_MAP[e.key];
-  if (!dir) return;
+  if (!(e.key in KEY_MAP)) return;
   e.preventDefault();
-  if (!e.repeat) {
-    heldDirectionKeys.add(e.key);
-    applySpeed();
-  }
-  if (dir.x === -direction.x && dir.y === -direction.y) return;
-  nextDirection = dir;
+  pressDirection(e.key, e.repeat);
 });
 
-window.addEventListener('keyup', (e) => {
-  if (!(e.key in KEY_MAP)) return;
-  heldDirectionKeys.delete(e.key);
-  applySpeed();
+window.addEventListener('keyup', (e) => releaseDirection(e.key));
+
+document.querySelectorAll('.dpad-btn').forEach(btn => {
+  const key = btn.dataset.key;
+  btn.addEventListener('pointerdown', (e) => {
+    e.preventDefault();
+    ensureAudio();
+    btn.classList.add('pressed');
+    pressDirection(key, false);
+  });
+  ['pointerup', 'pointercancel', 'pointerleave'].forEach(evt =>
+    btn.addEventListener(evt, () => {
+      btn.classList.remove('pressed');
+      releaseDirection(key);
+    })
+  );
 });
 
 let touchStart = null;
@@ -310,6 +396,24 @@ canvas.addEventListener('touchend', (e) => {
 });
 
 restartBtn.addEventListener('click', () => { init(); draw(); });
+
+const boostBtn = document.getElementById('boostBtn');
+function startTouchBoost(e) {
+  e.preventDefault();
+  ensureAudio();
+  touchBoostActive = true;
+  boostBtn.classList.add('pressed');
+  applySpeed();
+}
+function endTouchBoost() {
+  touchBoostActive = false;
+  boostBtn.classList.remove('pressed');
+  applySpeed();
+}
+boostBtn.addEventListener('pointerdown', startTouchBoost);
+['pointerup', 'pointercancel', 'pointerleave'].forEach(evt =>
+  boostBtn.addEventListener(evt, endTouchBoost)
+);
 
 document.querySelectorAll('#speedBar button[data-speed]').forEach(btn => {
   btn.addEventListener('click', () => {
