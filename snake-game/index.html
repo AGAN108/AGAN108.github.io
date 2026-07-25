@@ -60,13 +60,32 @@
     font-size: 0.85rem;
     color: #888;
   }
+  #speedBar {
+    display: flex;
+    gap: 8px;
+  }
+  #speedBar button {
+    padding: 6px 18px;
+    font-size: 0.9rem;
+    background: #333;
+    color: #ccc;
+  }
+  #speedBar button.active {
+    background: #f0c419;
+    color: #1a1a2e;
+  }
 </style>
 </head>
 <body>
   <h1>🐍 贪吃蛇</h1>
   <div id="score">得分: 0</div>
-  <canvas id="game" width="400" height="400"></canvas>
-  <div id="hint">方向键 / WASD 控制,空格暂停</div>
+  <div id="speedBar">
+    <button data-speed="slow">慢</button>
+    <button data-speed="medium" class="active">中</button>
+    <button data-speed="fast">快</button>
+  </div>
+  <canvas id="game" width="480" height="480"></canvas>
+  <div id="hint">方向键 / WASD 控制,空格暂停,回车重新开始</div>
 
   <div id="overlay">
     <div id="overlayText" style="font-size:1.5rem;"></div>
@@ -81,8 +100,11 @@ const overlay = document.getElementById('overlay');
 const overlayText = document.getElementById('overlayText');
 const restartBtn = document.getElementById('restartBtn');
 
-const GRID = 20;
+const GRID = 16;
 const CELLS = canvas.width / GRID;
+
+const SPEEDS = { slow: 180, medium: 110, fast: 60 };
+let currentSpeed = 'medium';
 
 let snake, direction, nextDirection, food, score, running, paused, tickInterval;
 
@@ -97,7 +119,7 @@ function init() {
   updateScore();
   overlay.classList.remove('show');
   if (tickInterval) clearInterval(tickInterval);
-  tickInterval = setInterval(tick, 120);
+  tickInterval = setInterval(tick, SPEEDS[currentSpeed]);
 }
 
 function placeFood() {
@@ -164,6 +186,12 @@ const KEY_MAP = {
 };
 
 window.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    init();
+    draw();
+    return;
+  }
   if (e.key === ' ') {
     paused = !paused;
     e.preventDefault();
@@ -192,7 +220,17 @@ canvas.addEventListener('touchend', (e) => {
   touchStart = null;
 });
 
-restartBtn.addEventListener('click', init);
+restartBtn.addEventListener('click', () => { init(); draw(); });
+
+document.querySelectorAll('#speedBar button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentSpeed = btn.dataset.speed;
+    document.querySelectorAll('#speedBar button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    if (tickInterval) clearInterval(tickInterval);
+    if (running) tickInterval = setInterval(tick, SPEEDS[currentSpeed]);
+  });
+});
 
 init();
 draw();
