@@ -74,6 +74,16 @@
     background: #f0c419;
     color: #1a1a2e;
   }
+  #musicBtn {
+    padding: 6px 18px;
+    font-size: 0.9rem;
+    background: #333;
+    color: #ccc;
+  }
+  #musicBtn.on {
+    background: #7CFC00;
+    color: #1a1a2e;
+  }
 </style>
 </head>
 <body>
@@ -83,9 +93,10 @@
     <button data-speed="slow">慢</button>
     <button data-speed="medium" class="active">中</button>
     <button data-speed="fast">快</button>
+    <button id="musicBtn" class="on">🔊 音乐</button>
   </div>
   <canvas id="game" width="480" height="480"></canvas>
-  <div id="hint">方向键 / WASD 控制,空格暂停,回车重新开始</div>
+  <div id="hint">方向键 / WASD 控制(长按加速),空格暂停,回车重新开始</div>
 
   <div id="overlay">
     <div id="overlayText" style="font-size:1.5rem;"></div>
@@ -105,8 +116,74 @@ const CELLS = canvas.width / GRID;
 
 const SPEEDS = { slow: 180, medium: 110, fast: 60 };
 let currentSpeed = 'medium';
+const heldDirectionKeys = new Set();
+const BOOST_FACTOR = 0.5;
+const MIN_INTERVAL = 30;
 
 let snake, direction, nextDirection, food, score, running, paused, tickInterval;
+
+// --- Audio (synthesized, no external files needed) ---
+let audioCtx = null;
+let musicOn = true;
+let musicTimer = null;
+let musicStep = 0;
+const MELODY = [261.63, 329.63, 392.00, 329.63, 440.00, 392.00, 329.63, 293.66];
+
+function ensureAudio() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+}
+
+function playTone(freq, duration, type, peakGain) {
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = type;
+  osc.frequency.value = freq;
+  gain.gain.setValueAtTime(0, audioCtx.currentTime);
+  gain.gain.linearRampToValueAtTime(peakGain, audioCtx.currentTime + 0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + duration);
+}
+
+function playEatSound() {
+  if (!audioCtx) return;
+  playTone(880, 0.12, 'square', 0.15);
+  setTimeout(() => { if (audioCtx) playTone(1320, 0.1, 'square', 0.12); }, 60);
+}
+
+function startMusic() {
+  if (musicTimer) return;
+  musicTimer = setInterval(() => {
+    if (!audioCtx || !musicOn) return;
+    playTone(MELODY[musicStep % MELODY.length], 0.25, 'triangle', 0.04);
+    musicStep++;
+  }, 300);
+}
+
+function stopMusic() {
+  clearInterval(musicTimer);
+  musicTimer = null;
+}
+
+function unlockAudioOnce() {
+  ensureAudio();
+  if (musicOn) startMusic();
+  window.removeEventListener('keydown', unlockAudioOnce);
+  window.removeEventListener('click', unlockAudioOnce);
+}
+window.addEventListener('keydown', unlockAudioOnce);
+window.addEventListener('click', unlockAudioOnce);
+
+function applySpeed() {
+  if (!running) return;
+  clearInterval(tickInterval);
+  const base = SPEEDS[currentSpeed];
+  const interval = heldDirectionKeys.size > 0 ? Math.max(MIN_INTERVAL, base * BOOST_FACTOR) : base;
+  tickInterval = setInterval(tick, interval);
+}
 
 function init() {
   snake = [{x: 8, y: 10}, {x: 7, y: 10}, {x: 6, y: 10}];
@@ -115,11 +192,12 @@ function init() {
   score = 0;
   running = true;
   paused = false;
+  heldDirectionKeys.clear();
   placeFood();
   updateScore();
   overlay.classList.remove('show');
   if (tickInterval) clearInterval(tickInterval);
-  tickInterval = setInterval(tick, SPEEDS[currentSpeed]);
+  applySpeed();
 }
 
 function placeFood() {
@@ -151,6 +229,7 @@ function tick() {
     score += 10;
     updateScore();
     placeFood();
+    playEatSound();
   } else {
     snake.pop();
   }
@@ -200,8 +279,18 @@ window.addEventListener('keydown', (e) => {
   const dir = KEY_MAP[e.key];
   if (!dir) return;
   e.preventDefault();
+  if (!e.repeat) {
+    heldDirectionKeys.add(e.key);
+    applySpeed();
+  }
   if (dir.x === -direction.x && dir.y === -direction.y) return;
   nextDirection = dir;
+});
+
+window.addEventListener('keyup', (e) => {
+  if (!(e.key in KEY_MAP)) return;
+  heldDirectionKeys.delete(e.key);
+  applySpeed();
 });
 
 let touchStart = null;
@@ -222,14 +311,21 @@ canvas.addEventListener('touchend', (e) => {
 
 restartBtn.addEventListener('click', () => { init(); draw(); });
 
-document.querySelectorAll('#speedBar button').forEach(btn => {
+document.querySelectorAll('#speedBar button[data-speed]').forEach(btn => {
   btn.addEventListener('click', () => {
     currentSpeed = btn.dataset.speed;
-    document.querySelectorAll('#speedBar button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('#speedBar button[data-speed]').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    if (tickInterval) clearInterval(tickInterval);
-    if (running) tickInterval = setInterval(tick, SPEEDS[currentSpeed]);
+    applySpeed();
   });
+});
+
+const musicBtn = document.getElementById('musicBtn');
+musicBtn.addEventListener('click', () => {
+  musicOn = !musicOn;
+  musicBtn.classList.toggle('on', musicOn);
+  musicBtn.textContent = musicOn ? '🔊 音乐' : '🔇 静音';
+  if (musicOn) { ensureAudio(); startMusic(); } else { stopMusic(); }
 });
 
 init();
