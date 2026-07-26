@@ -7,6 +7,11 @@
 <style>
   :root {
     color-scheme: light dark;
+    /* 游戏区尺寸,方向键面板与它左右对齐 */
+    --board: min(480px, 92vw, 46vh);
+  }
+  *, *::before, *::after {
+    box-sizing: border-box;
   }
   body {
     margin: 0;
@@ -15,8 +20,8 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 14px;
-    padding: 18px 0;
+    gap: 12px;
+    padding: 12px 0;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
     background:
       radial-gradient(circle at 20% 15%, rgba(255, 190, 140, 0.35), transparent 45%),
@@ -31,11 +36,11 @@
     backdrop-filter: blur(14px) saturate(140%);
     -webkit-backdrop-filter: blur(14px) saturate(140%);
     border: 1px solid rgba(255, 255, 255, 0.65);
-    border-radius: 18px;
+    border-radius: 14px;
     box-shadow:
       0 8px 24px rgba(150, 130, 110, 0.18),
       inset 0 1px 0 rgba(255, 255, 255, 0.8);
-    padding: 14px 20px;
+    padding: 7px 16px;
   }
   h1 {
     margin: 0;
@@ -66,10 +71,10 @@
   canvas {
     background: #0f0f1a;
     border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: 12px;
+    border-radius: 14px;
     touch-action: none;
-    max-width: 92vw;
-    height: auto;
+    width: var(--board);
+    height: var(--board);
     box-shadow:
       0 10px 28px rgba(120, 95, 70, 0.32),
       inset 0 1px 0 rgba(255, 255, 255, 0.15);
@@ -231,10 +236,14 @@
       inset 0 1px 0 rgba(255, 255, 255, 0.7);
     transform: translateY(4px);
   }
+  /* 方向键面板:宽度与游戏区一致,左右对齐 */
   #mobileControls {
     display: flex;
     align-items: center;
-    gap: 28px;
+    justify-content: space-between;
+    width: var(--board);
+    padding: 12px 18px;
+    border-radius: 18px;
   }
   #dpad {
     display: grid;
@@ -277,6 +286,88 @@
   .dpad-left { grid-area: left; }
   .dpad-down { grid-area: down; }
   .dpad-right { grid-area: right; }
+
+  /* ---- 手机端紧凑布局:保证方向键始终在屏幕内 ---- */
+  @media (max-width: 760px) {
+    body {
+      height: 100vh;
+      height: 100dvh;
+      overflow: hidden;
+      justify-content: flex-start;
+      gap: 8px;
+      padding: 8px 0 max(8px, env(safe-area-inset-bottom));
+    }
+    :root {
+      --board: min(94vw, 50vh);
+    }
+    h1 {
+      font-size: 1.45rem;
+      letter-spacing: 2px;
+    }
+    /* 顶部得分/调速区尽量紧凑,把空间留给游戏区 */
+    .panel {
+      padding: 5px 14px;
+      border-radius: 12px;
+    }
+    #scoreRow {
+      font-size: 0.92rem;
+      gap: 14px;
+    }
+    #speedBar {
+      gap: 5px;
+    }
+    #speedBar button, #musicBtn {
+      padding: 4px 11px;
+      font-size: 0.78rem;
+      border-radius: 9px;
+    }
+    /* 方向键靠下但不贴边,整体上移一些更靠近游戏区 */
+    #mobileControls {
+      margin-top: auto;
+      margin-bottom: 26px;
+      padding: 12px 16px;
+    }
+    #dpad {
+      grid-template-columns: repeat(3, 64px);
+      grid-template-rows: repeat(3, 64px);
+      gap: 6px;
+    }
+    .dpad-btn {
+      font-size: 1.55rem;
+      border-radius: 12px;
+    }
+    #boostBtn {
+      height: 72px;
+      padding: 0 20px;
+      font-size: 0.95rem;
+    }
+    /* 手机上没有实体键盘,操作说明改为隐藏以省出空间 */
+    #hint { display: none; }
+  }
+
+  /* 更矮的屏幕(如 iPhone SE)进一步压缩 */
+  @media (max-width: 760px) and (max-height: 700px) {
+    :root {
+      --board: min(94vw, 44vh);
+    }
+    h1 { font-size: 1.25rem; }
+    #dpad {
+      grid-template-columns: repeat(3, 52px);
+      grid-template-rows: repeat(3, 52px);
+      gap: 5px;
+    }
+    .dpad-btn { font-size: 1.35rem; }
+    #boostBtn {
+      height: 60px;
+      padding: 0 12px;
+      font-size: 0.85rem;
+    }
+    .panel { padding: 4px 12px; }
+    #mobileControls {
+      margin-bottom: 16px;
+      padding: 10px 12px;
+    }
+  }
 </style>
 </head>
 <body>
