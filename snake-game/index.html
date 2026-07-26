@@ -22,8 +22,19 @@
   }
   h1 {
     margin: 0;
-    font-weight: 300;
-    letter-spacing: 4px;
+    font-family: 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Microsoft YaHei', sans-serif;
+    font-weight: 900;
+    font-size: 2.4rem;
+    letter-spacing: 3px;
+    background: linear-gradient(180deg, #baff6b 0%, #7CFC00 45%, #4d9900 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      1px 1px 0 #2e6b00,
+      2px 2px 0 #2e6b00,
+      3px 3px 0 #2e6b00,
+      4px 4px 6px rgba(0, 0, 0, 0.45);
   }
   #score {
     font-size: 1.2rem;
@@ -56,11 +67,18 @@
     padding: 10px 24px;
     font-size: 1rem;
     border: none;
-    border-radius: 6px;
-    background: #f0c419;
+    border-radius: 10px;
+    background: linear-gradient(180deg, #ffe27a, #f0c419 55%, #d9a900);
     color: #1a1a2e;
     cursor: pointer;
     font-weight: bold;
+    box-shadow: 0 4px 0 #9c7a00, 0 6px 10px rgba(0, 0, 0, 0.35);
+    transform: translateY(0);
+    transition: transform 0.08s ease, box-shadow 0.08s ease;
+  }
+  button:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #9c7a00, 0 2px 4px rgba(0, 0, 0, 0.3);
   }
   #hint {
     font-size: 0.85rem;
@@ -73,34 +91,44 @@
   #speedBar button {
     padding: 6px 18px;
     font-size: 0.9rem;
-    background: #333;
+    background: linear-gradient(180deg, #4a4a4a, #333 55%, #232323);
     color: #ccc;
+    box-shadow: 0 3px 0 #111, 0 5px 8px rgba(0, 0, 0, 0.3);
+  }
+  #speedBar button:active {
+    box-shadow: 0 1px 0 #111, 0 2px 3px rgba(0, 0, 0, 0.25);
   }
   #speedBar button.active {
-    background: #f0c419;
+    background: linear-gradient(180deg, #ffe27a, #f0c419 55%, #d9a900);
     color: #1a1a2e;
+    box-shadow: 0 3px 0 #9c7a00, 0 5px 8px rgba(0, 0, 0, 0.3);
   }
   #musicBtn {
     padding: 6px 18px;
     font-size: 0.9rem;
-    background: #333;
+    background: linear-gradient(180deg, #4a4a4a, #333 55%, #232323);
     color: #ccc;
+    box-shadow: 0 3px 0 #111, 0 5px 8px rgba(0, 0, 0, 0.3);
   }
   #musicBtn.on {
-    background: #7CFC00;
+    background: linear-gradient(180deg, #b6ff5c, #7CFC00 55%, #5ea300);
     color: #1a1a2e;
+    box-shadow: 0 3px 0 #3f7000, 0 5px 8px rgba(0, 0, 0, 0.3);
   }
   #boostBtn {
     padding: 0 20px;
     height: 70px;
     font-size: 1rem;
-    background: #e67e22;
+    background: linear-gradient(180deg, #ffa552, #e67e22 55%, #c8660f);
     color: #1a1a2e;
+    box-shadow: 0 4px 0 #94480b, 0 6px 10px rgba(0, 0, 0, 0.35);
     touch-action: none;
     user-select: none;
   }
   #boostBtn:active, #boostBtn.pressed {
-    background: #ffb85c;
+    background: linear-gradient(180deg, #ffb85c, #ffa552 55%, #e67e22);
+    box-shadow: 0 1px 0 #94480b, 0 2px 4px rgba(0, 0, 0, 0.3);
+    transform: translateY(3px);
   }
   #mobileControls {
     display: flex;
@@ -119,15 +147,18 @@
   }
   .dpad-btn {
     font-size: 1.6rem;
-    background: #333;
+    background: linear-gradient(180deg, #4a4a4a, #333 55%, #232323);
     color: #eee;
     padding: 0;
+    box-shadow: 0 3px 0 #111, 0 5px 8px rgba(0, 0, 0, 0.3);
     touch-action: none;
     user-select: none;
   }
-  .dpad-btn.pressed {
-    background: #f0c419;
+  .dpad-btn:active, .dpad-btn.pressed {
+    background: linear-gradient(180deg, #ffe27a, #f0c419 55%, #d9a900);
     color: #1a1a2e;
+    box-shadow: 0 1px 0 #9c7a00, 0 2px 3px rgba(0, 0, 0, 0.25);
+    transform: translateY(3px);
   }
   .dpad-up { grid-area: up; }
   .dpad-left { grid-area: left; }
@@ -300,16 +331,84 @@ function tick() {
   draw();
 }
 
+function roundRectPath(x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.arcTo(x + w, y, x + w, y + h, r);
+  ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r);
+  ctx.arcTo(x, y, x + w, y, r);
+  ctx.closePath();
+}
+
+function drawSegment(x, y, colorLight, colorDark) {
+  const px = x * GRID;
+  const py = y * GRID;
+  const size = GRID - 1;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+  ctx.shadowBlur = 3;
+  ctx.shadowOffsetY = 2;
+  const grad = ctx.createLinearGradient(px, py, px, py + size);
+  grad.addColorStop(0, colorLight);
+  grad.addColorStop(1, colorDark);
+  ctx.fillStyle = grad;
+  roundRectPath(px, py, size, size, 4);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.28;
+  ctx.fillStyle = '#ffffff';
+  roundRectPath(px + 2, py + 1.5, size - 4, (size - 4) * 0.4, 2);
+  ctx.fill();
+  ctx.restore();
+}
+
+function drawFood() {
+  const cx = food.x * GRID + GRID / 2;
+  const cy = food.y * GRID + GRID / 2;
+  const radius = (GRID - 2) / 2;
+
+  ctx.save();
+  ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
+  ctx.shadowBlur = 4;
+  ctx.shadowOffsetY = 2;
+  const grad = ctx.createRadialGradient(
+    cx - radius * 0.35, cy - radius * 0.35, radius * 0.1,
+    cx, cy, radius
+  );
+  grad.addColorStop(0, '#ff8a80');
+  grad.addColorStop(0.6, '#f0413e');
+  grad.addColorStop(1, '#a4201e');
+  ctx.fillStyle = grad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+
+  ctx.save();
+  ctx.globalAlpha = 0.5;
+  ctx.fillStyle = '#ffffff';
+  ctx.beginPath();
+  ctx.arc(cx - radius * 0.35, cy - radius * 0.35, radius * 0.28, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.restore();
+}
+
 function draw() {
   ctx.fillStyle = '#0f0f1a';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-  ctx.fillStyle = '#f0413e';
-  ctx.fillRect(food.x * GRID, food.y * GRID, GRID - 1, GRID - 1);
+  drawFood();
 
   snake.forEach((s, i) => {
-    ctx.fillStyle = i === 0 ? '#7CFC00' : '#4CAF50';
-    ctx.fillRect(s.x * GRID, s.y * GRID, GRID - 1, GRID - 1);
+    if (i === 0) {
+      drawSegment(s.x, s.y, '#c6ff7a', '#7cb342');
+    } else {
+      drawSegment(s.x, s.y, '#8bc34a', '#4c8c2b');
+    }
   });
 }
 
