@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>贪吃蛇 | Snake Game</title>
+<title>乐乐专享版本 | 贪吃蛇</title>
 <style>
   :root {
     color-scheme: light dark;
@@ -68,6 +68,18 @@
   #bestScore {
     color: #7a6c5f;
   }
+  /* 彩蛋模式徽章,平时隐藏 */
+  #specialBadge {
+    display: none;
+    color: #b4530a;
+    font-weight: 700;
+    animation: badgePulse 1.4s ease-in-out infinite;
+  }
+  #specialBadge.show { display: block; }
+  @keyframes badgePulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+  }
   canvas {
     background: #0f0f1a;
     border: 1px solid rgba(255, 255, 255, 0.5);
@@ -116,8 +128,9 @@
   #startTitle {
     font-family: 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Microsoft YaHei', sans-serif;
     font-weight: 900;
-    font-size: 2.6rem;
-    letter-spacing: 3px;
+    font-size: clamp(1.5rem, 7vw, 2.3rem);
+    letter-spacing: 2px;
+    white-space: nowrap;
     background: linear-gradient(180deg, #ffa552 0%, #e8761a 45%, #b4530a 100%);
     -webkit-background-clip: text;
     background-clip: text;
@@ -125,6 +138,12 @@
     text-shadow:
       1px 1px 0 rgba(255, 255, 255, 0.9),
       2px 3px 6px rgba(150, 100, 60, 0.35);
+  }
+  #startSubtitle {
+    color: #9a8b7c;
+    font-size: 0.9rem;
+    letter-spacing: 6px;
+    margin-top: -6px;
   }
   #startBestScore {
     color: #c26a10;
@@ -139,6 +158,9 @@
   #overlayText {
     color: #5c4a38;
     font-weight: 600;
+    white-space: pre-line;
+    max-width: 300px;
+    line-height: 1.5;
   }
   /* 橙色磨砂玻璃按钮 */
   button {
@@ -301,8 +323,9 @@
       --board: min(94vw, 50vh);
     }
     h1 {
-      font-size: 1.45rem;
-      letter-spacing: 2px;
+      font-size: clamp(1.1rem, 5.2vw, 1.45rem);
+      letter-spacing: 1px;
+      white-space: nowrap;
     }
     /* 顶部得分/调速区尽量紧凑,把空间留给游戏区 */
     .panel {
@@ -350,7 +373,7 @@
     :root {
       --board: min(94vw, 44vh);
     }
-    h1 { font-size: 1.25rem; }
+    h1 { font-size: clamp(1rem, 4.8vw, 1.25rem); }
     #dpad {
       grid-template-columns: repeat(3, 52px);
       grid-template-rows: repeat(3, 52px);
@@ -371,10 +394,11 @@
 </style>
 </head>
 <body>
-  <h1>🐍 贪吃蛇</h1>
+  <h1>🐍 乐乐专享版本</h1>
   <div id="scoreRow" class="panel">
     <div id="score">得分: 0</div>
     <div id="bestScore">最高分: 0</div>
+    <div id="specialBadge">🥚 独特版</div>
   </div>
   <div id="speedBar" class="panel">
     <button data-speed="slow">慢</button>
@@ -405,7 +429,8 @@
 
   <div id="startScreen" class="modal show">
     <div class="modal-card">
-      <div id="startTitle">🐍 贪吃蛇</div>
+      <div id="startTitle">🐍 乐乐专享版本</div>
+      <div id="startSubtitle">贪 吃 蛇</div>
       <div id="startBestScore">历史最高分: 0</div>
       <div id="startInstructions">方向键 / WASD / 屏幕方向键控制,按住加速,空格暂停</div>
       <button id="startBtn">开始游戏</button>
@@ -445,8 +470,15 @@ function vibrate(pattern) {
   if (navigator.vibrate) navigator.vibrate(pattern);
 }
 
-const GRID = 16;
-const CELLS = canvas.width / GRID;
+const GRID_NORMAL = 16;
+const GRID_SPECIAL = 32;   // 彩蛋:格子放大一倍,蛇的体积也随之变成 2 倍
+let GRID = GRID_NORMAL;
+let CELLS = canvas.width / GRID;
+
+// --- 彩蛋:连续失败 2 次后,下一局进入"独特版" ---
+let deathCount = 0;
+let pendingSpecial = false;
+let specialMode = false;
 
 const SPEEDS = { slow: 180, medium: 110, fast: 60 };
 let currentSpeed = 'medium';
@@ -532,7 +564,15 @@ function applySpeed() {
 }
 
 function init() {
-  snake = [{x: 8, y: 10}, {x: 7, y: 10}, {x: 6, y: 10}];
+  // 彩蛋生效:本局使用放大的格子,并开启穿墙
+  specialMode = pendingSpecial;
+  pendingSpecial = false;
+  GRID = specialMode ? GRID_SPECIAL : GRID_NORMAL;
+  CELLS = canvas.width / GRID;
+  updateSpecialBadge();
+
+  const startY = Math.floor(CELLS / 2);
+  snake = [{x: 4, y: startY}, {x: 3, y: startY}, {x: 2, y: startY}];
   direction = {x: 1, y: 0};
   nextDirection = direction;
   score = 0;
@@ -559,13 +599,26 @@ function updateScore() {
   scoreEl.textContent = `得分: ${score}`;
 }
 
+function updateSpecialBadge() {
+  document.getElementById('specialBadge').classList.toggle('show', specialMode);
+}
+
 function tick() {
   if (!running || paused) return;
   direction = nextDirection;
   const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
-  if (head.x < 0 || head.x >= CELLS || head.y < 0 || head.y >= CELLS ||
-      snake.some(s => s.x === head.x && s.y === head.y)) {
+  if (specialMode) {
+    // 独特版:撞墙不死,从另一侧穿出来
+    head.x = (head.x + CELLS) % CELLS;
+    head.y = (head.y + CELLS) % CELLS;
+  } else if (head.x < 0 || head.x >= CELLS || head.y < 0 || head.y >= CELLS) {
+    gameOver();
+    return;
+  }
+
+  // 两种模式下,撞到自己都会结束
+  if (snake.some(s => s.x === head.x && s.y === head.y)) {
     gameOver();
     return;
   }
@@ -670,9 +723,20 @@ function gameOver() {
   running = false;
   clearInterval(tickInterval);
   const isNewRecord = saveBestScoreIfBeaten();
-  overlayText.textContent = isNewRecord
+
+  deathCount++;
+  // 每失败 2 次,解锁一局"独特版"(当前若已是独特版则不重复解锁)
+  if (!specialMode && deathCount % 2 === 0) {
+    pendingSpecial = true;
+  }
+
+  let msg = isNewRecord
     ? `🎉 新纪录!得分: ${score}`
     : `游戏结束!得分: ${score}(最高: ${bestScore})`;
+  if (pendingSpecial) {
+    msg += '\n🥚 彩蛋解锁:下一局是「独特版」——蛇变大一倍,可以穿墙!';
+  }
+  overlayText.textContent = msg;
   overlay.classList.add('show');
   vibrate([100, 50, 100]);
 }
