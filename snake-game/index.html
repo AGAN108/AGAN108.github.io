@@ -15,10 +15,27 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 16px;
+    gap: 14px;
+    padding: 18px 0;
     font-family: 'Segoe UI', 'Microsoft YaHei', sans-serif;
-    background: #1a1a2e;
-    color: #eee;
+    background:
+      radial-gradient(circle at 20% 15%, rgba(255, 190, 140, 0.35), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(215, 200, 185, 0.4), transparent 50%),
+      linear-gradient(160deg, #efe9e2 0%, #e2dad1 55%, #d6cdc3 100%);
+    background-attachment: fixed;
+    color: #4a423b;
+  }
+  /* 游戏区外部的磨砂玻璃面板 */
+  .panel {
+    background: rgba(255, 252, 248, 0.42);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid rgba(255, 255, 255, 0.65);
+    border-radius: 18px;
+    box-shadow:
+      0 8px 24px rgba(150, 130, 110, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    padding: 14px 20px;
   }
   h1 {
     margin: 0;
@@ -26,109 +43,193 @@
     font-weight: 900;
     font-size: 2.4rem;
     letter-spacing: 3px;
-    background: linear-gradient(180deg, #baff6b 0%, #7CFC00 45%, #4d9900 100%);
+    background: linear-gradient(180deg, #ffa552 0%, #e8761a 45%, #b4530a 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
     text-shadow:
-      1px 1px 0 #2e6b00,
-      2px 2px 0 #2e6b00,
-      3px 3px 0 #2e6b00,
-      4px 4px 6px rgba(0, 0, 0, 0.45);
+      1px 1px 0 rgba(255, 255, 255, 0.9),
+      2px 3px 5px rgba(150, 100, 60, 0.35);
+  }
+  #scoreRow {
+    display: flex;
+    gap: 22px;
+    font-size: 1.15rem;
+    font-weight: 600;
   }
   #score {
-    font-size: 1.2rem;
-    color: #f0c419;
+    color: #c26a10;
+  }
+  #bestScore {
+    color: #7a6c5f;
   }
   canvas {
     background: #0f0f1a;
-    border: 2px solid #444;
-    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 12px;
     touch-action: none;
     max-width: 92vw;
     height: auto;
+    box-shadow:
+      0 10px 28px rgba(120, 95, 70, 0.32),
+      inset 0 1px 0 rgba(255, 255, 255, 0.15);
   }
   #hint {
     max-width: 92vw;
     text-align: center;
   }
-  #overlay {
+  .modal {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,0.75);
+    background: rgba(233, 225, 216, 0.82);
+    backdrop-filter: blur(18px) saturate(130%);
+    -webkit-backdrop-filter: blur(18px) saturate(130%);
     display: none;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    gap: 12px;
+    padding: 20px;
+    color: #4a423b;
   }
-  #overlay.show { display: flex; }
+  .modal.show { display: flex; }
+  /* 弹窗内部的磨砂卡片 */
+  .modal-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 14px;
+    text-align: center;
+    padding: 32px 34px;
+    border-radius: 22px;
+    background: linear-gradient(160deg,
+      rgba(255, 253, 250, 0.9) 0%,
+      rgba(247, 240, 232, 0.82) 100%);
+    border: 1px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+      0 16px 40px rgba(140, 115, 90, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  }
+  #startTitle {
+    font-family: 'Segoe UI Rounded', 'Arial Rounded MT Bold', 'Microsoft YaHei', sans-serif;
+    font-weight: 900;
+    font-size: 2.6rem;
+    letter-spacing: 3px;
+    background: linear-gradient(180deg, #ffa552 0%, #e8761a 45%, #b4530a 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow:
+      1px 1px 0 rgba(255, 255, 255, 0.9),
+      2px 3px 6px rgba(150, 100, 60, 0.35);
+  }
+  #startBestScore {
+    color: #c26a10;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+  #startInstructions {
+    font-size: 0.85rem;
+    color: #8a7d70;
+    max-width: 280px;
+  }
+  #overlayText {
+    color: #5c4a38;
+    font-weight: 600;
+  }
+  /* 橙色磨砂玻璃按钮 */
   button {
     padding: 10px 24px;
     font-size: 1rem;
-    border: none;
-    border-radius: 10px;
-    background: linear-gradient(180deg, #ffe27a, #f0c419 55%, #d9a900);
-    color: #1a1a2e;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-radius: 12px;
+    background: linear-gradient(180deg,
+      rgba(255, 186, 120, 0.72) 0%,
+      rgba(240, 138, 48, 0.62) 55%,
+      rgba(214, 108, 22, 0.66) 100%);
+    backdrop-filter: blur(10px) saturate(150%);
+    -webkit-backdrop-filter: blur(10px) saturate(150%);
+    color: #5c3210;
     cursor: pointer;
     font-weight: bold;
-    box-shadow: 0 4px 0 #9c7a00, 0 6px 10px rgba(0, 0, 0, 0.35);
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+    box-shadow:
+      0 4px 0 rgba(176, 88, 18, 0.55),
+      0 7px 14px rgba(160, 90, 40, 0.28),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
     transform: translateY(0);
-    transition: transform 0.08s ease, box-shadow 0.08s ease;
+    transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.15s ease;
   }
   button:active {
     transform: translateY(3px);
-    box-shadow: 0 1px 0 #9c7a00, 0 2px 4px rgba(0, 0, 0, 0.3);
+    box-shadow:
+      0 1px 0 rgba(176, 88, 18, 0.55),
+      0 2px 5px rgba(160, 90, 40, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.6);
   }
   #hint {
     font-size: 0.85rem;
-    color: #888;
+    color: #8a7d70;
   }
   #speedBar {
     display: flex;
     gap: 8px;
   }
-  #speedBar button {
+  /* 未选中的次要按钮:淡一点的磨砂 */
+  #speedBar button, #musicBtn {
     padding: 6px 18px;
     font-size: 0.9rem;
-    background: linear-gradient(180deg, #4a4a4a, #333 55%, #232323);
-    color: #ccc;
-    box-shadow: 0 3px 0 #111, 0 5px 8px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(180deg,
+      rgba(255, 255, 255, 0.6) 0%,
+      rgba(238, 230, 221, 0.45) 100%);
+    color: #7a6c5f;
+    box-shadow:
+      0 3px 0 rgba(180, 165, 150, 0.45),
+      0 5px 10px rgba(150, 130, 110, 0.18),
+      inset 0 1px 0 rgba(255, 255, 255, 0.8);
   }
-  #speedBar button:active {
-    box-shadow: 0 1px 0 #111, 0 2px 3px rgba(0, 0, 0, 0.25);
+  #speedBar button:active, #musicBtn:active {
+    box-shadow:
+      0 1px 0 rgba(180, 165, 150, 0.45),
+      0 2px 4px rgba(150, 130, 110, 0.15),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
   }
-  #speedBar button.active {
-    background: linear-gradient(180deg, #ffe27a, #f0c419 55%, #d9a900);
-    color: #1a1a2e;
-    box-shadow: 0 3px 0 #9c7a00, 0 5px 8px rgba(0, 0, 0, 0.3);
-  }
-  #musicBtn {
-    padding: 6px 18px;
-    font-size: 0.9rem;
-    background: linear-gradient(180deg, #4a4a4a, #333 55%, #232323);
-    color: #ccc;
-    box-shadow: 0 3px 0 #111, 0 5px 8px rgba(0, 0, 0, 0.3);
-  }
-  #musicBtn.on {
-    background: linear-gradient(180deg, #b6ff5c, #7CFC00 55%, #5ea300);
-    color: #1a1a2e;
-    box-shadow: 0 3px 0 #3f7000, 0 5px 8px rgba(0, 0, 0, 0.3);
+  /* 选中态:橙色磨砂高亮 */
+  #speedBar button.active, #musicBtn.on {
+    background: linear-gradient(180deg,
+      rgba(255, 186, 120, 0.78) 0%,
+      rgba(240, 138, 48, 0.68) 55%,
+      rgba(214, 108, 22, 0.7) 100%);
+    color: #5c3210;
+    box-shadow:
+      0 3px 0 rgba(176, 88, 18, 0.55),
+      0 5px 10px rgba(160, 90, 40, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
   }
   #boostBtn {
-    padding: 0 20px;
+    padding: 0 22px;
     height: 70px;
     font-size: 1rem;
-    background: linear-gradient(180deg, #ffa552, #e67e22 55%, #c8660f);
-    color: #1a1a2e;
-    box-shadow: 0 4px 0 #94480b, 0 6px 10px rgba(0, 0, 0, 0.35);
+    background: linear-gradient(180deg,
+      rgba(255, 170, 90, 0.82) 0%,
+      rgba(235, 122, 30, 0.75) 55%,
+      rgba(200, 95, 12, 0.78) 100%);
+    color: #4d2a0b;
+    box-shadow:
+      0 5px 0 rgba(160, 78, 12, 0.6),
+      0 8px 16px rgba(160, 90, 40, 0.3),
+      inset 0 1px 0 rgba(255, 255, 255, 0.75);
     touch-action: none;
     user-select: none;
   }
   #boostBtn:active, #boostBtn.pressed {
-    background: linear-gradient(180deg, #ffb85c, #ffa552 55%, #e67e22);
-    box-shadow: 0 1px 0 #94480b, 0 2px 4px rgba(0, 0, 0, 0.3);
-    transform: translateY(3px);
+    background: linear-gradient(180deg,
+      rgba(255, 200, 140, 0.9) 0%,
+      rgba(255, 160, 70, 0.82) 55%,
+      rgba(235, 122, 30, 0.85) 100%);
+    box-shadow:
+      0 1px 0 rgba(160, 78, 12, 0.6),
+      0 2px 6px rgba(160, 90, 40, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    transform: translateY(4px);
   }
   #mobileControls {
     display: flex;
@@ -147,17 +248,29 @@
   }
   .dpad-btn {
     font-size: 1.6rem;
-    background: linear-gradient(180deg, #4a4a4a, #333 55%, #232323);
-    color: #eee;
+    background: linear-gradient(180deg,
+      rgba(255, 186, 120, 0.68) 0%,
+      rgba(240, 138, 48, 0.58) 55%,
+      rgba(214, 108, 22, 0.62) 100%);
+    color: #5c3210;
     padding: 0;
-    box-shadow: 0 3px 0 #111, 0 5px 8px rgba(0, 0, 0, 0.3);
+    box-shadow:
+      0 4px 0 rgba(176, 88, 18, 0.5),
+      0 7px 14px rgba(160, 90, 40, 0.25),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
     touch-action: none;
     user-select: none;
   }
   .dpad-btn:active, .dpad-btn.pressed {
-    background: linear-gradient(180deg, #ffe27a, #f0c419 55%, #d9a900);
-    color: #1a1a2e;
-    box-shadow: 0 1px 0 #9c7a00, 0 2px 3px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(180deg,
+      rgba(255, 205, 150, 0.9) 0%,
+      rgba(255, 160, 70, 0.82) 55%,
+      rgba(235, 122, 30, 0.85) 100%);
+    color: #4d2a0b;
+    box-shadow:
+      0 1px 0 rgba(176, 88, 18, 0.5),
+      0 2px 5px rgba(160, 90, 40, 0.22),
+      inset 0 1px 0 rgba(255, 255, 255, 0.7);
     transform: translateY(3px);
   }
   .dpad-up { grid-area: up; }
@@ -168,8 +281,11 @@
 </head>
 <body>
   <h1>🐍 贪吃蛇</h1>
-  <div id="score">得分: 0</div>
-  <div id="speedBar">
+  <div id="scoreRow" class="panel">
+    <div id="score">得分: 0</div>
+    <div id="bestScore">最高分: 0</div>
+  </div>
+  <div id="speedBar" class="panel">
     <button data-speed="slow">慢</button>
     <button data-speed="medium" class="active">中</button>
     <button data-speed="fast">快</button>
@@ -177,7 +293,7 @@
   </div>
   <canvas id="game" width="480" height="480"></canvas>
 
-  <div id="mobileControls">
+  <div id="mobileControls" class="panel">
     <div id="dpad">
       <button class="dpad-btn dpad-up" data-key="ArrowUp">▲</button>
       <button class="dpad-btn dpad-left" data-key="ArrowLeft">◀</button>
@@ -189,18 +305,54 @@
 
   <div id="hint">方向键 / WASD 或下方模拟方向键控制(按住加速),空格暂停,回车重新开始</div>
 
-  <div id="overlay">
-    <div id="overlayText" style="font-size:1.5rem;"></div>
-    <button id="restartBtn">重新开始</button>
+  <div id="overlay" class="modal">
+    <div class="modal-card">
+      <div id="overlayText" style="font-size:1.4rem;"></div>
+      <button id="restartBtn">重新开始</button>
+    </div>
+  </div>
+
+  <div id="startScreen" class="modal show">
+    <div class="modal-card">
+      <div id="startTitle">🐍 贪吃蛇</div>
+      <div id="startBestScore">历史最高分: 0</div>
+      <div id="startInstructions">方向键 / WASD / 屏幕方向键控制,按住加速,空格暂停</div>
+      <button id="startBtn">开始游戏</button>
+    </div>
   </div>
 
 <script>
 const canvas = document.getElementById('game');
 const ctx = canvas.getContext('2d');
 const scoreEl = document.getElementById('score');
+const bestScoreEl = document.getElementById('bestScore');
 const overlay = document.getElementById('overlay');
 const overlayText = document.getElementById('overlayText');
 const restartBtn = document.getElementById('restartBtn');
+const startScreen = document.getElementById('startScreen');
+const startBtn = document.getElementById('startBtn');
+const startBestScoreEl = document.getElementById('startBestScore');
+
+let bestScore = Number(localStorage.getItem('snakeBestScore')) || 0;
+
+function updateBestScoreDisplay() {
+  bestScoreEl.textContent = `最高分: ${bestScore}`;
+  startBestScoreEl.textContent = `历史最高分: ${bestScore}`;
+}
+
+function saveBestScoreIfBeaten() {
+  if (score > bestScore) {
+    bestScore = score;
+    localStorage.setItem('snakeBestScore', String(bestScore));
+    updateBestScoreDisplay();
+    return true;
+  }
+  return false;
+}
+
+function vibrate(pattern) {
+  if (navigator.vibrate) navigator.vibrate(pattern);
+}
 
 const GRID = 16;
 const CELLS = canvas.width / GRID;
@@ -219,7 +371,14 @@ let audioCtx = null;
 let musicOn = true;
 let musicTimer = null;
 let musicStep = 0;
-const MELODY = [261.63, 329.63, 392.00, 329.63, 440.00, 392.00, 329.63, 293.66];
+// 主旋律 + 低音贝斯,循环播放
+const MELODY = [
+  523.25, 659.25, 783.99, 659.25, 880.00, 783.99, 659.25, 587.33,
+  523.25, 587.33, 659.25, 783.99, 880.00, 783.99, 659.25, 523.25
+];
+const BASS = [130.81, 130.81, 164.81, 164.81, 174.61, 174.61, 196.00, 196.00];
+const MUSIC_GAIN = 0.11;
+const BASS_GAIN = 0.08;
 
 function ensureAudio() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -250,9 +409,12 @@ function startMusic() {
   if (musicTimer) return;
   musicTimer = setInterval(() => {
     if (!audioCtx || !musicOn) return;
-    playTone(MELODY[musicStep % MELODY.length], 0.25, 'triangle', 0.04);
+    playTone(MELODY[musicStep % MELODY.length], 0.28, 'triangle', MUSIC_GAIN);
+    if (musicStep % 2 === 0) {
+      playTone(BASS[(musicStep / 2) % BASS.length], 0.45, 'sine', BASS_GAIN);
+    }
     musicStep++;
-  }, 300);
+  }, 260);
 }
 
 function stopMusic() {
@@ -324,6 +486,7 @@ function tick() {
     updateScore();
     placeFood();
     playEatSound();
+    vibrate(30);
   } else {
     snake.pop();
   }
@@ -415,8 +578,12 @@ function draw() {
 function gameOver() {
   running = false;
   clearInterval(tickInterval);
-  overlayText.textContent = `游戏结束!最终得分: ${score}`;
+  const isNewRecord = saveBestScoreIfBeaten();
+  overlayText.textContent = isNewRecord
+    ? `🎉 新纪录!得分: ${score}`
+    : `游戏结束!得分: ${score}(最高: ${bestScore})`;
   overlay.classList.add('show');
+  vibrate([100, 50, 100]);
 }
 
 const KEY_MAP = {
@@ -446,6 +613,9 @@ function releaseDirection(key) {
 window.addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     e.preventDefault();
+    ensureAudio();
+    if (musicOn) startMusic();
+    startScreen.classList.remove('show');
     init();
     draw();
     return;
@@ -531,8 +701,15 @@ musicBtn.addEventListener('click', () => {
   if (musicOn) { ensureAudio(); startMusic(); } else { stopMusic(); }
 });
 
-init();
-draw();
+startBtn.addEventListener('click', () => {
+  ensureAudio();
+  if (musicOn) startMusic();
+  startScreen.classList.remove('show');
+  init();
+  draw();
+});
+
+updateBestScoreDisplay();
 </script>
 </body>
 </html>
